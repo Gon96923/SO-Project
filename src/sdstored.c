@@ -1,24 +1,43 @@
+// #include <unistd.h>
+// #include <fcntl.h>
+// #include <sys/wait.h>
+// #include <sys/stat.h>
+// #include <sys/types.h>
+// #include <string.h>
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include <signal.h>
+
+// int main(int argc, char *argv[]){
+//     mkfifo("fifo_cl-sv", 0644);
+//     mkfifo("fifo_sv-cl", 0644);
+    
+
+    
+
+// }
+
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <string.h>
-#include <stdio.h>
 
+int main(int argc, char * argv[]) {
+    char buf[1024];
+    int bytes_read;
+    
+    if(mkfifo("fifo", 0777)<0) perror("mkfifo");
 
-int main (int argc, char argv[]) {
-    char string[4000];
+    int fd_log = open("log.txt", O_CREAT | O_TRUNC | O_WRONLY, 0600);
+    int fd_npipe = open("fifo", O_RDONLY); //server lê do pipe
 
-        int bytesRead = 0;
-        while((bytesRead = read(STDIN_FILENO, string, 4000)) > 0) {
-            if(string[bytesRead - 1] == '\n') string[--bytesRead] = 0;
-        }
+    while((bytes_read=read(fd_npipe, buf, 1024))>0) {
+        write(fd_log, buf, bytes_read);
+    }
+    close(fd_log);
+    close(fd_npipe);
 
-
-        int client_server_fifo = open("client_server_fifo", O_WRONLY);
-        int server_client_fifo = open("server_client_fifo", O_RDONLY);
-        write(client_server_fifo, string, bytesRead);
-        close(client_server_fifo);
-
-        while((bytesRead = read(server_client_fifo, string, 4000)) > 0)
-        write(STDOUT_FILENO, string, bytesRead);
-        close(server_client_fifo);
+    return 0;
 }
