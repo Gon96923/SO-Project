@@ -23,15 +23,38 @@
 //     return 0;
 // }
 
-#define nop 1
-#define bcompress 2
-#define bdecompress 3
-#define gcompress 4
-#define gdecompress 5
-#define encrypt 2
-#define decrypt 3
+/*
+#define NOP 1
+#define BCOMPRESS 2
+#define BDECOMPRESS 3
+#define GCOMPRESS 4
+#define GDECOMPRESS 5
+#define ENCRYPT 6
+#define DECRYPT 7
+#define BADCODE -1
 
+typedef struct { 
+    char *command;
+     int val; 
+    } commandStruct;
 
+static commandStruct lookuptable[] = {
+    { "nop", NOP }, { "bcompress", BCOMPRESS }, { "bdecompress", BDECOMPRESS }, { "gcompress", GCOMPRESS },{ "gdecompress", GDECOMPRESS },{ "encrypt", ENCRYPT },{ "decrypt", DECRYPT }
+};
+
+#define BADCODE (sizeof(lookuptable)/sizeof(commandStruct))
+
+int keyfromstring(char *command)
+{
+    int i;
+    for (i=0; i < BADCODE; i++) {
+        commandStruct *com = lookuptable[i];
+        if (strcmp(com->command, command) == 0)
+            return com->val;
+    }
+    return BADCODE;
+}
+*/
 
 int main(int argc, char * argv[])
 {
