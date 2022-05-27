@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 // int main(int argc, char * argv[]) {
@@ -23,38 +25,6 @@
 //     return 0;
 // }
 
-/*
-#define NOP 1
-#define BCOMPRESS 2
-#define BDECOMPRESS 3
-#define GCOMPRESS 4
-#define GDECOMPRESS 5
-#define ENCRYPT 6
-#define DECRYPT 7
-#define BADCODE -1
-
-typedef struct { 
-    char *command;
-     int val; 
-    } commandStruct;
-
-static commandStruct lookuptable[] = {
-    { "nop", NOP }, { "bcompress", BCOMPRESS }, { "bdecompress", BDECOMPRESS }, { "gcompress", GCOMPRESS },{ "gdecompress", GDECOMPRESS },{ "encrypt", ENCRYPT },{ "decrypt", DECRYPT }
-};
-
-#define BADCODE (sizeof(lookuptable)/sizeof(commandStruct))
-
-int keyfromstring(char *command)
-{
-    int i;
-    for (i=0; i < BADCODE; i++) {
-        commandStruct *com = lookuptable[i];
-        if (strcmp(com->command, command) == 0)
-            return com->val;
-    }
-    return BADCODE;
-}
-*/
 
 int main(int argc, char * argv[])
 {
@@ -66,35 +36,38 @@ int main(int argc, char * argv[])
     char * myfifo = "/tmp/myfifo";
 
     mkfifo(myfifo, 0666);
+    printf("novo ola");
 
     char *str1[1024];
     while (1)
     {
+        printf("while");
         fd1 = open(myfifo,O_RDONLY);
         if (read(fd1, str1, sizeof(str1)) < 0) {
             source = str1[0];
+            //int copia = cp(source,destiny);
             destiny = str1[1];
             for (i=2;i<sizeof(str1)-2;i++) {
-            if (strcmp(str1[i],"bcompress")) {
-                execl("bcompress.o",NULL); //não faço ideia disto
+            if (!strcmp(str1[i],"bcompress")) {
+                execlp(source,"bcompress.o",NULL); //não faço ideia disto
             }
-            else if (strcmp(str1[i],"bdecompress")) {
-
+            else if (!strcmp(str1[i],"bdecompress")) {
+                printf("%d",1);
             }
-            else if (strcmp(str1[i],"decrypt")) {
-
+            else if (!strcmp(str1[i],"decrypt")) {
+                printf("%d",3);
             }
-            else if (strcmp(str1[i],"encrypt")) {
-
+            else if (!strcmp(str1[i],"encrypt")) {
+                printf("%d",4);
             }
-            else if (strcmp(str1[i],"gcompress")) {
-
+            else if (!strcmp(str1[i],"gcompress")) {
+                printf("%d",5);
             }
-            else if (strcmp(str1[i],"gdecompress")) {
-
+            else if (!strcmp(str1[i],"gdecompress")) {
+                printf("%d",6);
             }
-            else if (strcmp(str1[i],"nop")) {
-
+            else if (!strcmp(str1[i],"nop")) {
+                printf("%d",7);
             }
             }
         }
@@ -105,3 +78,4 @@ int main(int argc, char * argv[])
     }
     return 0;
 }
+// ./sdstore proc-file <priority> samples/file-a outputs/file-a-output bcompress nop gcompress encrypt nop
